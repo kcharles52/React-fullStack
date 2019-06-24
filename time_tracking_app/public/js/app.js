@@ -1,9 +1,28 @@
 class TimersDashboard extends React.Component {
+  state = {
+    timers: [
+      {
+        title: "Practice squat",
+        project: "Gym Chores",
+        id: uuid.v4(),
+        elapsed: 5456099,
+        runningSince: Date.now()
+      },
+      {
+        title: "Bake squash",
+        project: "Kitchen Chores",
+        id: uuid.v4(),
+        elapsed: 1273998,
+        runningSince: null
+      }
+    ]
+  };
+
   render() {
     return (
       <div className="ui three column centered grid">
         <div className="column">
-          <EditableTimerList />
+          <EditableTimerList timers={this.state.timers} />
           <ToggleableTimerForm isOpen={true} />
         </div>
       </div>
@@ -12,13 +31,24 @@ class TimersDashboard extends React.Component {
 }
 
 class ToggleableTimerForm extends React.Component {
+  state = {
+    isOpen: false
+  };
+
+  handleFormOpen = () => {
+    this.setState({ isOpen: true });
+  };
+
   render() {
-    if (this.props.isOpen) {
+    if (this.state.isOpen) {
       return <TimerForm />;
     } else {
       return (
         <div className="ui basic content center aligned segment">
-          <button className="ui basic button icon">
+          <button
+            className="ui basic button icon"
+            onClick={this.handleFormOpen}
+          >
             <i className="plus icon" />
           </button>
         </div>
@@ -29,36 +59,38 @@ class ToggleableTimerForm extends React.Component {
 
 class EditableTimerList extends React.Component {
   render() {
-    return (
-      <div id="timers">
+    const timers = this.props.timers.map(timer => {
+      const { id, title, project, elapsed, runningSince } = timer;
+
+      return (
         <EditableTimer
-          title="Learn React"
-          project="Web Domination"
-          elapsed="8986300"
-          runningSince={null}
-          editFormOpen={false}
+          key={id}
+          id={id}
+          title={title}
+          project={project}
+          elapsed={elapsed}
+          runningSince={runningSince}
         />
-        <EditableTimer
-          title="Learn extreme ironing"
-          project="World Domination"
-          elapsed="3890985"
-          runningSince={null}
-          editFormOpen={true}
-        />
-      </div>
-    );
+      );
+    });
+    return <div id="timers">{timers}</div>;
   }
 }
 
 class EditableTimer extends React.Component {
-  render() {
-    const { title, project, elapsed, runningSince, editFormOpen } = this.props;
+  state = {
+    editFormOpen: false
+  };
 
-    if (editFormOpen) {
-      return <TimerForm title={title} project={project} />;
+  render() {
+    const { title, project, elapsed, runningSince, id } = this.props;
+
+    if (this.state.editFormOpen) {
+      return <TimerForm id={id} title={title} project={project} />;
     } else {
       return (
         <Timer
+          id={id}
           title={title}
           project={project}
           elapsed={elapsed}
@@ -98,20 +130,40 @@ class Timer extends React.Component {
 }
 
 class TimerForm extends React.Component {
+  state = {
+    title: this.props.title || "",
+    project: this.props.project || ""
+  };
+
+  handleInputChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
   render() {
-    const { title, project } = this.props;
+    const { title, project } = this.state;
     const submitText = title ? "Update" : "Create";
+
     return (
       <div className="ui centered card">
         <div className="content">
           <div className="ui form">
             <div className="field">
               <label>Title</label>
-              <input type="text" defaultValue={title} />
+              <input
+                name="title"
+                type="text"
+                value={title}
+                onChange={this.handleInputChange}
+              />
             </div>
             <div className="field">
               <label>Project</label>
-              <input type="text" defaultValue={project} />
+              <input
+                name="project"
+                type="text"
+                value={project}
+                onChange={this.handleInputChange}
+              />
             </div>
             <div className="ui two bottom attached buttons">
               <button className="ui basic blue button">{submitText}</button>
