@@ -1,8 +1,26 @@
 class ProductList extends React.Component {
   render() {
+    const {
+      id,
+      title,
+      description,
+      url,
+      votes,
+      submitterAvatarUrl,
+      productImageUrl
+    } = Seed.products[0];
+
     return (
-      <div className='ui unstackable items'>
-        <Product />
+      <div className="ui unstackable items">
+        <Product
+          id={id}
+          title={title}
+          description={description}
+          url={url}
+          votes={votes}
+          submitterAvatarUrl={submitterAvatarUrl}
+          productImageUrl={productImageUrl}
+        />
       </div>
     );
   }
@@ -10,22 +28,34 @@ class ProductList extends React.Component {
 
 class Product extends React.Component {
   render() {
+    const {
+      title,
+      description,
+      url,
+      votes,
+      submitterAvatarUrl,
+      productImageUrl
+    } = this.props;
+
     return (
-      <div className='item'>
-        <div className='image'>
-          <img src='images/products/image-aqua.png' />
+      <div className="item">
+        <div className="image">
+          <img src={productImageUrl} />
         </div>
-        <div className='middle aligned content'>
-          <div className='description'>
-            <a>Fort Knight</a>
-            <p>Authentic renaissance actors, delivered in just two weeks.</p>
+        <div className="middle aligned content">
+          <div className="header">
+            <a>
+              <i className="large caret up icon" />
+            </a>
+            {votes}
           </div>
-          <div className='extra'>
+          <div className="description">
+            <a href={url}>{title}</a>
+            <p>{description}</p>
+          </div>
+          <div className="extra">
             <span>Submitted by:</span>
-            <img
-              className='ui avatar image'
-              src='images/avatars/daniel.jpg'
-            />
+            <img className="ui avatar image" src={submitterAvatarUrl} />
           </div>
         </div>
       </div>
@@ -33,7 +63,4 @@ class Product extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <ProductList />,
-  document.getElementById('content')
-);
+ReactDOM.render(<ProductList />, document.getElementById("content"));
