@@ -1,3 +1,7 @@
+## Project: Timer
+
+This project has been setup from scracth and It doesn't fully comply with the usuall stracture of react application. The purpose was to teach beginner react concepts without worrying about the stracture
+
 ### Running the app
 
 1. Ensure you have `npm` installed.
