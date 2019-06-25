@@ -26,6 +26,10 @@ class TimersDashboard extends React.Component {
     this.updateTimer(attrs);
   };
 
+  handleTrashClick = timerId => {
+    this.deleteTimer(timerId);
+  };
+
   createTimer = timer => {
     const t = helpers.newTimer(timer);
     this.setState({
@@ -46,6 +50,12 @@ class TimersDashboard extends React.Component {
     });
   };
 
+  deleteTimer = timerId => {
+    this.setState({
+      timers: this.state.timers.filter(timer => timer.id !== timerId)
+    });
+  };
+
   render() {
     return (
       <div className="ui three column centered grid">
@@ -53,6 +63,7 @@ class TimersDashboard extends React.Component {
           <EditableTimerList
             timers={this.state.timers}
             onFormSubmit={this.handleEditFormSubmit}
+            onTrashClick={this.handleTrashClick}
           />
           <ToggleableTimerForm
             isOpen={true}
@@ -119,6 +130,7 @@ class EditableTimerList extends React.Component {
           elapsed={elapsed}
           runningSince={runningSince}
           onFormSubmit={this.props.onFormSubmit}
+          onTrashClick={this.props.onTrashClick}
         />
       );
     });
@@ -174,6 +186,7 @@ class EditableTimer extends React.Component {
           elapsed={elapsed}
           runningSince={runningSince}
           onEditClick={this.handleEditClick}
+          onTrashClick={this.props.onTrashClick}
         />
       );
     }
@@ -181,6 +194,10 @@ class EditableTimer extends React.Component {
 }
 
 class Timer extends React.Component {
+  handleTrashClick = () => {
+    this.props.onTrashClick(this.props.id);
+  };
+
   render() {
     const { title, project, elapsed, onEditClick } = this.props;
     const elapsedString = helpers.renderElapsedString(elapsed);
@@ -197,7 +214,10 @@ class Timer extends React.Component {
             <span className="right floated edit icon" onClick={onEditClick}>
               <i className="edit icon" />
             </span>
-            <span className="right floated trash icon">
+            <span
+              className="right floated trash icon"
+              onClick={this.handleTrashClick}
+            >
               <i className="trash icon" />
             </span>
           </div>
